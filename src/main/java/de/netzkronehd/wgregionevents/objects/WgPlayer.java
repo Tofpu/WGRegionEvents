@@ -36,8 +36,10 @@ public class WgPlayer {
                     if(enter.isCancelled()) {
                         return true;
                     }
-                    regions.add(region);
-                    Bukkit.getScheduler().runTaskLater(WgRegionEvents.getInstance(), () -> Bukkit.getPluginManager().callEvent(new RegionEnteredEvent(region, player, way, parent, from, to)), 1);
+                    if (!enter.isSilentlyCancelled()) {
+                        regions.add(region);
+                        Bukkit.getScheduler().runTaskLater(WgRegionEvents.getInstance(), () -> Bukkit.getPluginManager().callEvent(new RegionEnteredEvent(region, player, way, parent, from, to)), 1);
+                    }
                 }
 
             }
@@ -51,8 +53,10 @@ public class WgPlayer {
                     if(leave.isCancelled()) {
                         return true;
                     }
-                    Bukkit.getScheduler().runTaskLater(WgRegionEvents.getInstance(), () -> Bukkit.getPluginManager().callEvent(new RegionLeftEvent(oldRegion, player, way, parent, from, to)), 1);
-                    toRemove.add(oldRegion);
+                    if (!leave.isSilentlyCancelled()) {
+                        Bukkit.getScheduler().runTaskLater(WgRegionEvents.getInstance(), () -> Bukkit.getPluginManager().callEvent(new RegionLeftEvent(oldRegion, player, way, parent, from, to)), 1);
+                        toRemove.add(oldRegion);
+                    }
                 }
             }
             regions.removeAll(toRemove);
